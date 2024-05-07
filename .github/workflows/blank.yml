@@ -7,7 +7,7 @@ on:
 
 jobs:
   test:
-    runs-on: namespace-profile-default
+    runs-on: namespace-profile-8
     strategy:
       # By default, GitHub will maximize the number of jobs run in parallel
       # depending on the available runners on GitHub-hosted virtual machines.
